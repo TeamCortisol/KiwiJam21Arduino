@@ -13,7 +13,6 @@ void setup() {
   Serial.begin(9600);
   pinMode(RELAY, OUTPUT);
   digitalWrite(RELAY, LOW);
-  // Serial.println("START");
   randomSeed(analogRead(1));
 }
 
@@ -30,16 +29,11 @@ void loop() {
   sprintf(str, "%d", val);
   Serial.println(str);
 
-  
   if (Serial.available()) { //wait for command
     byte ch = Serial.read();
     sdata += (char)ch;
     if (ch=='\r') {  // command recieved
     sdata.trim();
-    //Serial.println(sdata);
-    
-    //process command
-    //Serial.println(sdata);
 
     if(sdata == "zap"){
       zap(100);
@@ -65,7 +59,6 @@ void loop() {
 }
 
 void zap(int timeToZap){ //time to zap in ms
-//  Serial.println("Zapping at " + String(timeToZap) + " ms");
   digitalWrite(RELAY, HIGH);
   delay(timeToZap);
   digitalWrite(RELAY, LOW);
