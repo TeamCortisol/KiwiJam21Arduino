@@ -1,5 +1,7 @@
 void setup() {
   Serial.begin(9600);
+  randomSeed(analogRead(1));
+
 }
 
 int a = 0;
@@ -10,7 +12,9 @@ int size = sizeof(beat) / sizeof(int);
 
 void loop() {
 
-  int val = beat[a];
+  int randNumber = random(-10, 10);
+
+  int val = beat[a] + randNumber;
   a++;
   if (a >= size) {
     a = 0;
