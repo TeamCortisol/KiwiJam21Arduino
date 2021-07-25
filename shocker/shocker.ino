@@ -1,10 +1,16 @@
 #include <FastLED.h>
+#include <Servo.h>
 #define NUM_LEDS 37 //24 in heart
 #define DATA_PIN 6
 
-#define RELAY 8
+#define SERVO 9
+
+byte servoAngleInitial = 55; //55
+byte servoAngleFinal = 85; //70
 
 CRGB leds[NUM_LEDS];
+
+Servo servo;
 
 byte hue = 0;
 
@@ -19,14 +25,14 @@ int size = sizeof(beat) / sizeof(int);
 void setup() {
   Serial.begin(9600);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  pinMode(RELAY, OUTPUT);
-  digitalWrite(RELAY, LOW);
   randomSeed(analogRead(1));
+  Serial.println("START");
+
+  
 }
 
 
 void loop() {
-
   int randNumber = random(-10, 10);
   int val = beat[a] + randNumber;
   a++;
@@ -74,18 +80,21 @@ void loop() {
 }
 
 void zap(int timeToZap){ //time to zap in ms
-  digitalWrite(RELAY, HIGH);
+  Serial.println("ZAP");
+  servo.attach(SERVO);
+  servo.write(servoAngleFinal);
+  
   for(int i = 0; i < 24; i++){
-    leds[i] = CRGB(0,0,0);
+    leds[i] = CRGB(0,0,255);
   }
   for(int i = 25; i < NUM_LEDS; i++){
     leds[i] = CRGB(0,0,255);
   }
   FastLED.show();
   delay(timeToZap);
-  digitalWrite(RELAY, LOW);
   for(int i = 25; i < NUM_LEDS; i++){
     leds[i] = CRGB(0,0,0);
   }
   FastLED.show();
+  servo.write(servoAngleInitial);
 }
