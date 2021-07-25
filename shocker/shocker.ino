@@ -1,5 +1,12 @@
+#include <FastLED.h>
+#define NUM_LEDS 37 //24 in heart
+#define DATA_PIN 6
+
 #define RELAY 8
 
+CRGB leds[NUM_LEDS];
+
+byte hue = 0;
 
 String sdata="";  // Initialised to nothing.
 
@@ -11,6 +18,7 @@ int size = sizeof(beat) / sizeof(int);
 
 void setup() {
   Serial.begin(9600);
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   pinMode(RELAY, OUTPUT);
   digitalWrite(RELAY, LOW);
   randomSeed(analogRead(1));
@@ -28,6 +36,13 @@ void loop() {
   char str[40];
   sprintf(str, "%d", val);
   Serial.println(str);
+
+  for(int i = 0; i < 24; i++){
+    leds[i] = CHSV(0,255,map(val,350,550,50,255));
+    
+  }
+  FastLED.show();
+  
 
   if (Serial.available()) { //wait for command
     byte ch = Serial.read();
@@ -60,6 +75,17 @@ void loop() {
 
 void zap(int timeToZap){ //time to zap in ms
   digitalWrite(RELAY, HIGH);
+  for(int i = 0; i < 24; i++){
+    leds[i] = CRGB(0,0,0);
+  }
+  for(int i = 25; i < NUM_LEDS; i++){
+    leds[i] = CRGB(0,0,255);
+  }
+  FastLED.show();
   delay(timeToZap);
   digitalWrite(RELAY, LOW);
+  for(int i = 25; i < NUM_LEDS; i++){
+    leds[i] = CRGB(0,0,0);
+  }
+  FastLED.show();
 }
